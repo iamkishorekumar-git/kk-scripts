@@ -1,9 +1,7 @@
 const MongoClient = require("mongodb").MongoClient;
 
-const { execSync } = require('child_process')
-
 const client = new MongoClient(
-  ""
+  process.env.DB_URI
 );
 
 
@@ -15,8 +13,8 @@ client.connect(async (err) => {
 
   console.log("Database connection established");
 
-  const db = client.db("klenty_auth_test_14");
-  const collection = db.collection("clusterdetails");
+  const db = client.db("dbName");
+  const collection = db.collection("collectionName");
 
   async function findIds() {
     const doc_id = [];
@@ -32,13 +30,13 @@ client.connect(async (err) => {
 
   console.log("[Ids]",res)
 
-  const isHeroku = true
-  let targetURL = isHeroku ? "https://klenty-test-14.herokuapp.com" : "https://test-4.kl-infra.com"
+  const isGoogle = true
+  let targetURL = isGoogle ? "https://www.google.com" : "https://www.github.com.com"
 
   const filter = { _id: {$in: res} };
   const update = {
     $set: {
-      "info.web.target.blue.write": targetURL,
+      "info": targetURL,
     },
   };
 
@@ -47,9 +45,6 @@ client.connect(async (err) => {
       console.error(err);
     } else {
       console.log("[result]", result);
-      const command = `heroku restart -a klenty-auth-test-14`;
-      execSync(command)
-      console.log("Document updated successfully && restart auth-server");
     }
 
     client.close();
